@@ -186,39 +186,11 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
   }
   function releaseFocus() { if (focusHandler) { document.removeEventListener('keydown', focusHandler); focusHandler = null; } }
 
-  // Search
-  const STATE = { index: null, indexFetched: false };
-  async function fetchIndex() {
-    if (STATE.indexFetched) return STATE.index || [];
-    try {
-      const res = await fetch('search-index.json', { cache: 'no-cache' });
-      if (res.ok) STATE.index = await res.json();
-    } catch (e) { /* ignore offline */ }
-    STATE.indexFetched = true;
-    return STATE.index || [];
-  }
+  // Smart AI Search with Supabase
+  const SUPABASE_URL = 'https://wyspqiqswthahknqohxb.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5c3BxaXFzd3RoYWhrbnFvaHhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5OTQwNDYsImV4cCI6MjA3NjU3MDA0Nn0.jIYSXU4r2Bt-1Waz0Ni3G5nFFZu4fcVJLxsvrfUTkq8';
 
   function norm(s) { return (s || '').toLowerCase().replace(/\s+/g, ' ').trim(); }
-  function tokenize(q) { return norm(q).split(' ').filter(Boolean); }
-
-  function scoreItem(item, tokens) {
-    const fields = {
-      title: norm(item.title),
-      tag: norm(item.tag),
-      brief: norm(item.brief),
-      content: norm(item.content || ''),
-    };
-    const allPresent = tokens.every(t => Object.values(fields).some(v => v.includes(t)));
-    if (!allPresent) return 0;
-    let s = 0;
-    tokens.forEach(t => {
-      if (fields.title.includes(t)) s += 3;
-      if (fields.tag.includes(t)) s += 2;
-      if (fields.brief.includes(t)) s += 1.5;
-      if (fields.content.includes(t)) s += 1;
-    });
-    return s;
-  }
 
   function domCards() {
     return $$('.card').map((card) => {
@@ -232,6 +204,34 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
         content: $('.card-img', card)?.getAttribute('alt') || '',
       };
     });
+  }
+
+  async function smartSearch(query) {
+    try {
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/smart_search_articles`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          search_query: query,
+          result_limit: 10
+        })
+      });
+
+      if (!response.ok) {
+        console.error('Search failed:', await response.text());
+        return [];
+      }
+
+      const results = await response.json();
+      return results || [];
+    } catch (error) {
+      console.error('Search error:', error);
+      return [];
+    }
   }
 
   function renderResultsPopup(results, query) {
@@ -257,26 +257,18 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
   async function runSearch(q) {
     const query = norm(q);
     if (!query) return;
-    const tokens = tokenize(query);
-    const idx = await fetchIndex();
-    const dom = location.pathname.endsWith('/') || location.pathname.endsWith('/index.html') ? domCards() : [];
-    const merged = [...dom, ...idx];
-    const seen = new Set();
-    const scored = merged
-      .filter((it) => { if (seen.has(it.url)) return false; seen.add(it.url); return true; })
-      .map((it, i) => ({ it, s: scoreItem(it, tokens), i }))
-      .filter(x => x.s > 0)
-      .sort((a, b) => (b.s - a.s) || (a.i - b.i))
-      .map(x => x.it);
 
-    if (scored.length === 0) {
-      if (msg) msg.textContent = 'No results';
+    // Use smart search from database
+    const results = await smartSearch(query);
+
+    if (results.length === 0) {
+      if (msg) msg.textContent = 'No results found';
+      renderResultsPopup([], query);
       return;
     }
-    // Always render on index; navigate if not there
-    const onIndex = location.pathname.endsWith('/') || location.pathname.endsWith('/index.html');
-    // Show popup anchored to dock
-    renderResultsPopup(scored, query);
+
+    if (msg) msg.textContent = '';
+    renderResultsPopup(results, query);
   }
 
   if (popupSearchClose) popupSearchClose.addEventListener('click', () => hidePopup(popupSearch));
