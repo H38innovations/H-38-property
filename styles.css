@@ -202,7 +202,7 @@ button:focus-visible {
 }
 
 /* Dock and modal */
-.site-dock { position: fixed; left: 50%; bottom: max(12px, env(safe-area-inset-bottom)); transform: translateX(-50%); width: min(1100px, 92vw); background:#fff; color: var(--text-dark); border-radius:9999px; box-shadow: 0 6px 24px rgba(0,0,0,0.08); border:1px solid #e7e2df; z-index:50; }
+.site-dock { position: fixed; left: 50%; bottom: max(30px, env(safe-area-inset-bottom) + 30px); transform: translateX(-50%); width: min(1100px, 92vw); background:#fff; color: var(--text-dark); border-radius:9999px; box-shadow: 0 6px 24px rgba(0,0,0,0.08); border:2px solid var(--brand); z-index:50; }
 .dock-inner { display:flex; align-items:center; gap:14px; padding:10px 12px; }
 .dock-logo { display:flex; align-items:center; padding-left:6px; padding-right:6px; }
 .dock-logo img { height:38px; display:block; }
