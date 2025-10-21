@@ -1,9 +1,7 @@
 /* Dock + Search + Modal */
 window.DOCK_CONFIG = window.DOCK_CONFIG || {
   rotatingPlaceholders: [
-    'PROJECT',
-    'Regression',
-    'impact of AI and concept design',
+    'ask H-38',
   ],
   modalHTML: `
   <div class="info-popup">
@@ -257,26 +255,53 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
   async function runSearch(q) {
     const query = norm(q);
     if (!query) return;
-    const tokens = tokenize(query);
-    const idx = await fetchIndex();
-    const dom = location.pathname.endsWith('/') || location.pathname.endsWith('/index.html') ? domCards() : [];
-    const merged = [...dom, ...idx];
-    const seen = new Set();
-    const scored = merged
-      .filter((it) => { if (seen.has(it.url)) return false; seen.add(it.url); return true; })
-      .map((it, i) => ({ it, s: scoreItem(it, tokens), i }))
-      .filter(x => x.s > 0)
-      .sort((a, b) => (b.s - a.s) || (a.i - b.i))
-      .map(x => x.it);
 
-    if (scored.length === 0) {
+    const onIndex = location.pathname.endsWith('/') || location.pathname.endsWith('/index.html');
+    let results = [];
+
+    const endpoint = (typeof window !== 'undefined' && window.SEARCH_API_URL) || '/.netlify/functions/search';
+
+    try {
+      const res = await fetch(`${endpoint}?q=${encodeURIComponent(query)}`, {
+        headers: { 'Accept': 'application/json' },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.results)) {
+          results = data.results.map((item) => ({
+            url: item.url,
+            title: item.title,
+            tag: item.tag,
+            brief: item.brief,
+            image: item.image,
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Semantic search failed', error);
+    }
+
+    if (!results.length) {
+      // Fallback to keyword search
+      const tokens = tokenize(query);
+      const idx = await fetchIndex();
+      const dom = onIndex ? domCards() : [];
+      const merged = [...dom, ...idx];
+      const seen = new Set();
+      results = merged
+        .filter((it) => { if (seen.has(it.url)) return false; seen.add(it.url); return true; })
+        .map((it, i) => ({ it, s: scoreItem(it, tokens), i }))
+        .filter(x => x.s > 0)
+        .sort((a, b) => (b.s - a.s) || (a.i - b.i))
+        .map(x => x.it);
+    }
+
+    if (!results.length) {
       if (msg) msg.textContent = 'No results';
       return;
     }
-    // Always render on index; navigate if not there
-    const onIndex = location.pathname.endsWith('/') || location.pathname.endsWith('/index.html');
-    // Show popup anchored to dock
-    renderResultsPopup(scored, query);
+
+    renderResultsPopup(results, query);
   }
 
   if (popupSearchClose) popupSearchClose.addEventListener('click', () => hidePopup(popupSearch));

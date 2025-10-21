@@ -238,7 +238,7 @@ input[type="search"] { -webkit-appearance: none; appearance: none; }
 .dock-backdrop { position:fixed; inset:0; background: transparent; z-index:70; display:none; }
 
 /* Popups anchored above dock */
-.dock-popup { position: fixed; left: 50%; transform: translateX(-50%) translateY(24px); /* start lower for slide */ bottom: calc(72px + env(safe-area-inset-bottom) + 24px); width: min(1100px, 92vw); z-index: 90; display:none; }
+.dock-popup { position: fixed; left: 50%; transform: translateX(-50%) translateY(24px); /* start lower for slide */ bottom: calc(72px + env(safe-area-inset-bottom) + 59px); width: min(1100px, 92vw); z-index: 90; display:none; }
 .dock-popup .popup-card { border:1px solid #e6e1de; border-radius:18px; box-shadow: 0 10px 40px rgba(0,0,0,0.12); max-height:70svh; overflow:auto; position:relative; background:#fff; color: var(--text-dark); padding: 16px 20px; scrollbar-width: none; }
 .dock-popup .popup-card::-webkit-scrollbar { display: none; }
 .dock-popup.info .popup-card { background:#fff; color: var(--text-dark); }
