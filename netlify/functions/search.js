@@ -1,33 +1,16 @@
 /* Netlify Function: Smart-ish search powered by OpenAI Responses API */
 
-const fs = require('fs/promises');
-const path = require('path');
-
-const LOCAL_INDEX_PATH = path.join(__dirname, 'search-index.json');
-const ROOT_INDEX_PATH = path.join(process.cwd(), 'search-index.json');
-
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
 const MAX_RESULTS = parseInt(process.env.SEARCH_MAX_RESULTS || '5', 10);
+const ARTICLES = require('./search-index.json');
+
+if (!Array.isArray(ARTICLES)) {
+  throw new Error('search-index.json must export an array');
+}
 
 if (!OPENAI_API_KEY) {
   console.warn('[search] Warning: OPENAI_API_KEY is not set. Requests will fail.');
-}
-
-let ARTICLES = null;
-
-async function loadArticles() {
-  if (ARTICLES) return ARTICLES;
-  let raw;
-  try {
-    raw = await fs.readFile(LOCAL_INDEX_PATH, 'utf-8');
-  } catch (error) {
-    raw = await fs.readFile(ROOT_INDEX_PATH, 'utf-8');
-  }
-  const parsed = JSON.parse(raw);
-  if (!Array.isArray(parsed)) throw new Error('search-index.json must be an array');
-  ARTICLES = parsed;
-  return ARTICLES;
 }
 
 function buildPrompt(query, articles) {
@@ -91,8 +74,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const articles = await loadArticles();
-    const subset = articles.slice(0, 20);
+    const subset = ARTICLES.slice(0, 20);
     const prompt = buildPrompt(query, subset);
 
     const response = await fetch('https://api.openai.com/v1/responses', {
