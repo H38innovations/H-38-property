@@ -305,6 +305,7 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
     const onIndex = location.pathname.endsWith('/') || location.pathname.endsWith('/index.html');
     let results = [];
     let summary = '';
+    let errorNote = '';
 
     const endpoint = (typeof window !== 'undefined' && window.SEARCH_API_URL) || '/.netlify/functions/search';
 
@@ -326,9 +327,17 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
         if (typeof data.summary === 'string') {
           summary = data.summary;
         }
+        if (typeof data.error === 'string') {
+          errorNote = data.error;
+        }
+      } else {
+        const detail = await res.text();
+        errorNote = `Search service error (${res.status}).`;
+        console.error('Semantic search HTTP error', res.status, detail);
       }
     } catch (error) {
       console.error('Semantic search failed', error);
+      errorNote = 'Search service unreachable. Using fallback results.';
     }
 
     if (!results.length) {
@@ -351,11 +360,15 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
     }
 
     if (!results.length) {
-      if (msg) msg.textContent = 'No results';
+      const notice = errorNote ? `${errorNote} No results.` : 'No results.';
+      if (msg) msg.textContent = notice;
+      popupSearchBody.innerHTML = `<p>${notice}</p>`;
+      showPopup(popupSearch);
       return;
     }
 
-    renderResultsPopup(results, summary || `Top matches for “${q}”.`);
+    const finalSummary = summary || errorNote || `Top matches for “${q}”.`;
+    renderResultsPopup(results, finalSummary);
   }
 
   if (popupSearchClose) popupSearchClose.addEventListener('click', () => hidePopup(popupSearch));
