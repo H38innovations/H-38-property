@@ -3,7 +3,8 @@
 const fs = require('fs/promises');
 const path = require('path');
 
-const INDEX_PATH = path.join(__dirname, '..', '..', 'search-index.json');
+const LOCAL_INDEX_PATH = path.join(__dirname, 'search-index.json');
+const ROOT_INDEX_PATH = path.join(process.cwd(), 'search-index.json');
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
@@ -17,7 +18,12 @@ let ARTICLES = null;
 
 async function loadArticles() {
   if (ARTICLES) return ARTICLES;
-  const raw = await fs.readFile(INDEX_PATH, 'utf-8');
+  let raw;
+  try {
+    raw = await fs.readFile(LOCAL_INDEX_PATH, 'utf-8');
+  } catch (error) {
+    raw = await fs.readFile(ROOT_INDEX_PATH, 'utf-8');
+  }
   const parsed = JSON.parse(raw);
   if (!Array.isArray(parsed)) throw new Error('search-index.json must be an array');
   ARTICLES = parsed;
