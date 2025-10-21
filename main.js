@@ -189,6 +189,42 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5c3BxaXFzd3RoYWhrbnFvaHhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5OTQwNDYsImV4cCI6MjA3NjU3MDA0Nn0.jIYSXU4r2Bt-1Waz0Ni3G5nFFZu4fcVJLxsvrfUTkq8';
 
   function norm(s) { return (s || '').toLowerCase().replace(/\s+/g, ' ').trim(); }
+  function tokenize(q) { return norm(q).split(' ').filter(Boolean); }
+
+  const STATE = { index: null, indexFetched: false };
+
+  async function fetchIndex() {
+    if (STATE.indexFetched) return STATE.index || [];
+    try {
+      const res = await fetch('search-index.json', { cache: 'no-cache' });
+      if (res.ok) STATE.index = await res.json();
+    } catch (error) {
+      console.error('Failed to load search index', error);
+    }
+    STATE.indexFetched = true;
+    return STATE.index || [];
+  }
+
+  function scoreItem(item, tokens) {
+    const fields = {
+      title: norm(item.title || ''),
+      tag: norm(item.tag || ''),
+      brief: norm(item.brief || ''),
+      content: norm(item.content || ''),
+    };
+    const allPresent = tokens.every((token) =>
+      Object.values(fields).some((value) => value.includes(token))
+    );
+    if (!allPresent) return 0;
+    let score = 0;
+    tokens.forEach((token) => {
+      if (fields.title.includes(token)) score += 3;
+      if (fields.tag.includes(token)) score += 2;
+      if (fields.brief.includes(token)) score += 1.5;
+      if (fields.content.includes(token)) score += 1;
+    });
+    return score;
+  }
 
   function domCards() {
     return $$('.card').map((card) => {
