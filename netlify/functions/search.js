@@ -3,10 +3,16 @@
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
 const MAX_RESULTS = parseInt(process.env.SEARCH_MAX_RESULTS || '5', 10);
-const ARTICLES = require('./search-index.json');
+let ARTICLES = null;
 
-if (!Array.isArray(ARTICLES)) {
-  throw new Error('search-index.json must export an array');
+function loadArticles() {
+  if (!ARTICLES) {
+    ARTICLES = require('./search-index.json');
+    if (!Array.isArray(ARTICLES)) {
+      throw new Error('search-index.json must export an array');
+    }
+  }
+  return ARTICLES;
 }
 
 if (!OPENAI_API_KEY) {
@@ -74,7 +80,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const subset = ARTICLES.slice(0, 20);
+    const subset = loadArticles().slice(0, 20);
     const prompt = buildPrompt(query, subset);
 
     const response = await fetch('https://api.openai.com/v1/responses', {
