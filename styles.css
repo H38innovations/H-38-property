@@ -248,6 +248,7 @@ input[type="search"] { -webkit-appearance: none; appearance: none; }
 .popup-body { padding:8px 0 4px; }
 
 /* Results list in popup */
+.search-summary { margin: 0 0 12px; font-size: 1rem; font-weight: 500; }
 .search-list { display:grid; gap:10px; }
 .search-row { display:flex; gap:16px; align-items:flex-start; padding:12px; border-radius:12px; background: transparent; }
 .close.close-light { position:absolute; right:12px; top:12px; background:transparent; border:0; padding:4px; }

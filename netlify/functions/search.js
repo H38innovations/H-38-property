@@ -40,12 +40,14 @@ function buildPrompt(query, articles) {
     .join('\n\n');
 
   return `You are an expert curator for the H-38 studio knowledge hub. A visitor submitted the query: "${query}".
-For each article below, consider TITLE, TAG, BRIEF, CONTENT, and URL. Return up to ${MAX_RESULTS} relevant articles as JSON array with objects {"title", "url", "tag", "brief"}. Include only direct JSON, no explanation. If nothing matches, return [].
+From the following articles (each with TITLE, TAG, BRIEF, CONTENT, URL), infer the best answer.
+Respond ONLY in JSON with the shape {"summary": "two or three sentences summarising relevant insights", "results": [{"title": "...", "url": "...", "tag": "...", "brief": "..."}, ...]}.
+Include at most ${MAX_RESULTS} results ordered by relevance. The summary must rely on article content only. If nothing fits, return {"summary": "No relevant articles found.", "results": []}.
 \nArticles:\n${items}`;
 }
 
 function extractResults(data) {
-  if (!data || !Array.isArray(data.output)) return [];
+  if (!data || !Array.isArray(data.output)) return { summary: '', results: [] };
   const combined = data.output
     .map((segment) => {
       if (!segment || !Array.isArray(segment.content)) return '';
@@ -57,11 +59,16 @@ function extractResults(data) {
     .join('\n');
   try {
     const parsed = JSON.parse(combined);
-    return Array.isArray(parsed) ? parsed.slice(0, MAX_RESULTS) : [];
+    if (parsed && typeof parsed === 'object') {
+      return {
+        summary: typeof parsed.summary === 'string' ? parsed.summary : '',
+        results: Array.isArray(parsed.results) ? parsed.results.slice(0, MAX_RESULTS) : [],
+      };
+    }
   } catch (error) {
     console.warn('[search] Could not parse model response', error.message, combined);
-    return [];
   }
+  return { summary: '', results: [] };
 }
 
 exports.handler = async (event) => {
@@ -78,7 +85,7 @@ exports.handler = async (event) => {
 
   try {
     const articles = await loadArticles();
-    const subset = articles.slice(0, 15);
+    const subset = articles.slice(0, 20);
     const prompt = buildPrompt(query, subset);
 
     const response = await fetch('https://api.openai.com/v1/responses', {
@@ -100,14 +107,14 @@ exports.handler = async (event) => {
     }
 
     const data = await response.json();
-    const results = extractResults(data);
+    const { summary, results } = extractResults(data);
 
     return {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ results }),
+      body: JSON.stringify({ summary, results }),
     };
   } catch (error) {
     console.error('[search] error', error);

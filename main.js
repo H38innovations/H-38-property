@@ -268,11 +268,21 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
     }
   }
 
-  function renderResultsPopup(results, query) {
+  function renderResultsPopup(results, summary) {
     popupSearchBody.innerHTML = '';
+    const summaryText = (summary || '').trim();
+    if (summaryText) {
+      const summaryEl = document.createElement('p');
+      summaryEl.className = 'search-summary';
+      summaryEl.textContent = summaryText;
+      popupSearchBody.appendChild(summaryEl);
+    }
+
     const count = results.length;
     if (count === 0) {
-      popupSearchBody.innerHTML = '<p>No results. Try another term.</p>';
+      const empty = document.createElement('p');
+      empty.textContent = 'No results. Try another term.';
+      popupSearchBody.appendChild(empty);
     } else {
       const list = document.createElement('div');
       list.className = 'search-list';
@@ -294,6 +304,7 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
 
     const onIndex = location.pathname.endsWith('/') || location.pathname.endsWith('/index.html');
     let results = [];
+    let summary = '';
 
     const endpoint = (typeof window !== 'undefined' && window.SEARCH_API_URL) || '/.netlify/functions/search';
 
@@ -311,6 +322,9 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
             brief: item.brief,
             image: item.image,
           }));
+        }
+        if (typeof data.summary === 'string') {
+          summary = data.summary;
         }
       }
     } catch (error) {
@@ -330,6 +344,10 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
         .filter(x => x.s > 0)
         .sort((a, b) => (b.s - a.s) || (a.i - b.i))
         .map(x => x.it);
+
+      if (results.length) {
+        summary = `Showing related articles for “${q}”.`;
+      }
     }
 
     if (!results.length) {
@@ -337,7 +355,7 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
       return;
     }
 
-    renderResultsPopup(results, query);
+    renderResultsPopup(results, summary || `Top matches for “${q}”.`);
   }
 
   if (popupSearchClose) popupSearchClose.addEventListener('click', () => hidePopup(popupSearch));
