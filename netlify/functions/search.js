@@ -53,8 +53,9 @@ function extractResults(data) {
         .join('\n');
     })
     .join('\n');
+  const cleaned = combined.replace(/```[a-z]*\n?/gi, '').replace(/```/g, '');
   try {
-    const parsed = JSON.parse(combined);
+    const parsed = JSON.parse(cleaned);
     if (parsed && typeof parsed === 'object') {
       return {
         summary: typeof parsed.summary === 'string' ? parsed.summary : '',
