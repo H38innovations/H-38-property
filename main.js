@@ -1,70 +1,23 @@
 /* Dock + Search + Modal */
 window.DOCK_CONFIG = window.DOCK_CONFIG || {
   rotatingPlaceholders: [
-    'ask H-38',
+    'Search',
   ],
   modalHTML: `
   <div class="info-popup">
-    <h2 class="info-title" id="dock-modal-title">H-38</h2>
-    <h3 class="info-subtitle">Build Better</h3>
-    <p class="info-lede">H-38 shapes the built environment across every scale—from furniture and interiors to architecture, manufacturing, and cities. We integrate design, technology, and systems thinking to help creative and technical teams work with greater intelligence and efficiency.</p>
-    <h3 class="info-section">Philosophy</h3>
-    <div class="info-philosophy">
-      <p>Optimization drives progress.</p>
-      <p>Innovation follows. Technology enables.</p>
-    </div>
-    <h3 class="info-section">Core Pillars</h3>
-    <div class="pillars-grid">
-      <article class="pillar-card">
-        <h4 class="pillar-title">Project Intelligence</h4>
-        <ul class="pillar-list">
-          <li>Define what to build.</li>
-          <li>Develop briefs, feasibility studies, and data-driven evaluations.</li>
-          <li>Assess spatial, regulatory, and economic viability.</li>
-          <li>Position each project strategically before design begins.</li>
-        </ul>
-      </article>
-      <article class="pillar-card">
-        <h4 class="pillar-title">Design Intelligence</h4>
-        <ul class="pillar-list">
-          <li>Support conceptual and schematic design through computation.</li>
-          <li>Automate spatial, environmental, and performance analyses.</li>
-          <li>Integrate AI and BIM for informed, data-based decision-making.</li>
-          <li>Use generative systems to optimize form and function.</li>
-        </ul>
-      </article>
-      <article class="pillar-card">
-        <h4 class="pillar-title">Performance Intelligence</h4>
-        <ul class="pillar-list">
-          <li>Measure how built environments perform.</li>
-          <li>Analyze energy use, comfort, and occupancy behavior.</li>
-          <li>Translate data into insight through digital dashboards.</li>
-        </ul>
-      </article>
-      <article class="pillar-card">
-        <h4 class="pillar-title">Manufacturing Intelligence</h4>
-        <ul class="pillar-list">
-          <li>Connect design to production and finance.</li>
-          <li>Automate BOMs, quotations, and purchase orders through Zoho and Rhino systems.</li>
-          <li>Create digital twins linking geometry, cost, and fabrication data.</li>
-          <li>Deliver seamless transitions from design intent to physical output.</li>
-        </ul>
-      </article>
-    </div>
-    <h3 class="info-section">Contact</h3>
+    <h2 class="info-title" id="dock-modal-title">Contact H-38</h2>
     <div class="contact-grid contact-three">
+      <article class="contact-card plain">
+        <h4 class="contact-title">Call</h4>
+        <p class="contact-link">+971 528 915 205<br/>+91 8000 235 253</p>
+      </article>
       <article class="contact-card plain">
         <h4 class="contact-title">Email</h4>
         <p class="contact-link"><a href="mailto:connect@h-38.com" target="_blank" rel="noopener">connect@h-38.com</a></p>
       </article>
       <article class="contact-card plain">
-        <h4 class="contact-title">Call</h4>
-        <p class="contact-link">+971 528915205<br/>+91 8000235253</p>
-      </article>
-      <article class="contact-card plain">
         <h4 class="contact-title">Social</h4>
-        <p class="contact-link"><a href="https://www.instagram.com/h.hyphen.38/" target="_blank" rel="noopener">Instagram</a><br/>
-        <a href="https://www.linkedin.com/company/h-38" target="_blank" rel="noopener">LinkedIn</a></p>
+        <p class="contact-link"><a href="https://www.instagram.com/h.hyphen.38/" target="_blank" rel="noopener">Instagram</a><br/><a href="https://www.linkedin.com/company/h-38" target="_blank" rel="noopener">LinkedIn</a></p>
       </article>
     </div>
   </div>
@@ -76,18 +29,54 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const byId = (id) => document.getElementById(id);
 
+  const heroOverlay = byId('hero-overlay');
+  const heroEnter = byId('hero-enter');
+  const siteMain = byId('site-main');
+  const dock = document.querySelector('.site-dock');
   const input = byId('dock-search');
-  const goBtn = byId('dock-go');
   const msg = byId('dock-msg');
-  const topBtn = byId('dock-top');
+  const callBtn = byId('top-call');
+  const filterToggle = byId('filter-toggle');
+  const filterMenu = byId('filter-menu');
+  const filterWrapper = document.querySelector('.filter-wrapper');
+  const filterOptions = $$('.filter-option');
+  let activeTag = 'all';
   const backdrop = byId('dock-backdrop');
   // Popups
   const popupInfo = byId('popup-info');
   const popupInfoContent = byId('popup-info-content');
   const popupInfoClose = byId('popup-info-close');
-  const popupSearch = byId('popup-search');
-  const popupSearchBody = byId('popup-search-body');
-  const popupSearchClose = byId('popup-search-close');
+  let searchQuery = '';
+
+  function showHero() {
+    if (heroOverlay) heroOverlay.classList.remove('is-hidden');
+    if (siteMain) siteMain.classList.add('is-hidden');
+    if (dock) dock.classList.add('is-hidden');
+    document.body.classList.add('hero-active');
+  }
+
+  function hideHero() {
+    if (heroOverlay) heroOverlay.classList.add('is-hidden');
+    if (siteMain) siteMain.classList.remove('is-hidden');
+    if (dock) dock.classList.remove('is-hidden');
+    document.body.classList.remove('hero-active');
+  }
+
+  const heroSeen = sessionStorage.getItem('heroSeen') === '1';
+  if (heroOverlay && siteMain && dock) {
+    if (heroSeen) {
+      hideHero();
+    } else {
+      showHero();
+    }
+  }
+
+  if (heroEnter) {
+    heroEnter.addEventListener('click', () => {
+      sessionStorage.setItem('heroSeen', '1');
+      hideHero();
+    });
+  }
 
   // Rotate placeholders
   let phIndex = 0;
@@ -106,6 +95,7 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
     startPH();
     input.addEventListener('focus', stopPH);
     input.addEventListener('blur', startPH);
+    input.addEventListener('input', (e) => updateSearch(e.target.value));
   }
 
   // Popup helpers
@@ -113,9 +103,6 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
   let justOpened = false;
   function showPopup(el) {
     lastFocus = document.activeElement;
-    // Close the other popup if open
-    if (el === popupInfo && popupSearch.style.display === 'block') hidePopup(popupSearch);
-    if (el === popupSearch && popupInfo.style.display === 'block') hidePopup(popupInfo);
 
     backdrop.style.display = 'block';
     el.style.display = 'block';
@@ -146,22 +133,84 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
     if (justOpened) return;
     if (e.target === backdrop) {
       if (popupInfo.style.display === 'block') hidePopup(popupInfo);
-      if (popupSearch.style.display === 'block') hidePopup(popupSearch);
     }
   }
   if (backdrop) backdrop.addEventListener('click', outsideClick);
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       if (popupInfo.style.display === 'block') hidePopup(popupInfo);
-      if (popupSearch.style.display === 'block') hidePopup(popupSearch);
     }
   });
-  if (topBtn) topBtn.addEventListener('click', (ev) => {
-    ev.preventDefault();
-    popupInfoContent.innerHTML = DOCK_CONFIG.modalHTML || '';
-    showPopup(popupInfo);
-  });
+  if (callBtn) {
+    callBtn.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      const isOpen = popupInfo.style.display === 'block';
+      if (isOpen) {
+        hidePopup(popupInfo);
+        return;
+      }
+      popupInfoContent.innerHTML = DOCK_CONFIG.modalHTML || '';
+      showPopup(popupInfo);
+    });
+  }
   if (popupInfoClose) popupInfoClose.addEventListener('click', () => hidePopup(popupInfo));
+
+  function applyCardFilters() {
+    const cards = $$('.card');
+    const tokens = searchQuery ? searchQuery.split(' ').filter(Boolean) : [];
+    let visibleCount = 0;
+    cards.forEach((card) => {
+      const tag = (card.dataset.tag || '').toLowerCase();
+      const matchesFilter = activeTag === 'all' || tag === activeTag;
+      const haystack = norm([
+        tag,
+        $('.card-title', card)?.textContent,
+        $('.card-brief', card)?.textContent,
+      ].filter(Boolean).join(' '));
+      const matchesText = !tokens.length || tokens.every((token) => haystack.includes(token));
+      const show = matchesFilter && matchesText;
+      card.classList.toggle('is-filter-hidden', !show);
+      if (show) visibleCount += 1;
+    });
+    if (msg) msg.textContent = visibleCount ? '' : 'No matching articles.';
+  }
+
+  if (filterToggle && filterMenu) {
+    const setMenuState = (open) => {
+      filterMenu.hidden = !open;
+      filterToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    filterToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setMenuState(filterMenu.hidden);
+    });
+    document.addEventListener('click', (e) => {
+      if (!filterMenu.hidden && filterWrapper && !filterWrapper.contains(e.target)) {
+        setMenuState(false);
+      }
+    });
+  }
+
+  if (filterOptions.length) {
+    const setActive = (value) => {
+      activeTag = value;
+      filterOptions.forEach((btn) => {
+        btn.classList.toggle('is-selected', (btn.dataset.filter || 'all') === value);
+      });
+      applyCardFilters();
+      if (filterToggle && filterMenu) {
+        filterMenu.hidden = true;
+        filterToggle.setAttribute('aria-expanded', 'false');
+      }
+    };
+    filterOptions.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const value = (btn.dataset.filter || 'all').toLowerCase();
+        setActive(value);
+      });
+    });
+    setActive(activeTag);
+  }
 
   let focusHandler = null;
   function trapFocus(container) {
@@ -184,204 +233,12 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
   }
   function releaseFocus() { if (focusHandler) { document.removeEventListener('keydown', focusHandler); focusHandler = null; } }
 
-  // Smart AI Search with Supabase
-  const SUPABASE_URL = 'https://wyspqiqswthahknqohxb.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind5c3BxaXFzd3RoYWhrbnFvaHhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA5OTQwNDYsImV4cCI6MjA3NjU3MDA0Nn0.jIYSXU4r2Bt-1Waz0Ni3G5nFFZu4fcVJLxsvrfUTkq8';
-
   function norm(s) { return (s || '').toLowerCase().replace(/\s+/g, ' ').trim(); }
-  function tokenize(q) { return norm(q).split(' ').filter(Boolean); }
 
-  const STATE = { index: null, indexFetched: false };
-
-  async function fetchIndex() {
-    if (STATE.indexFetched) return STATE.index || [];
-    try {
-      const res = await fetch('search-index.json', { cache: 'no-cache' });
-      if (res.ok) STATE.index = await res.json();
-    } catch (error) {
-      console.error('Failed to load search index', error);
-    }
-    STATE.indexFetched = true;
-    return STATE.index || [];
+  function updateSearch(value) {
+    searchQuery = norm(value || '');
+    applyCardFilters();
   }
 
-  function scoreItem(item, tokens) {
-    const fields = {
-      title: norm(item.title || ''),
-      tag: norm(item.tag || ''),
-      brief: norm(item.brief || ''),
-      content: norm(item.content || ''),
-    };
-    const allPresent = tokens.every((token) =>
-      Object.values(fields).some((value) => value.includes(token))
-    );
-    if (!allPresent) return 0;
-    let score = 0;
-    tokens.forEach((token) => {
-      if (fields.title.includes(token)) score += 3;
-      if (fields.tag.includes(token)) score += 2;
-      if (fields.brief.includes(token)) score += 1.5;
-      if (fields.content.includes(token)) score += 1;
-    });
-    return score;
-  }
-
-  function domCards() {
-    return $$('.card').map((card) => {
-      const link = $('.card-link', card);
-      return {
-        url: link ? link.getAttribute('href') : '#',
-        title: $('.card-title', card)?.textContent || '',
-        tag: (card.getAttribute('data-tag') || '').toLowerCase(),
-        brief: $('.card-brief', card)?.textContent || '',
-        image: $('.card-img', card)?.getAttribute('src') || '',
-        content: $('.card-img', card)?.getAttribute('alt') || '',
-      };
-    });
-  }
-
-  async function smartSearch(query) {
-    try {
-      const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/smart_search_articles`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        },
-        body: JSON.stringify({
-          search_query: query,
-          result_limit: 10
-        })
-      });
-
-      if (!response.ok) {
-        console.error('Search failed:', await response.text());
-        return [];
-      }
-
-      const results = await response.json();
-      return results || [];
-    } catch (error) {
-      console.error('Search error:', error);
-      return [];
-    }
-  }
-
-  function renderResultsPopup(results, summary) {
-    popupSearchBody.innerHTML = '';
-    const summaryText = (summary || '').trim();
-    if (summaryText) {
-      const summaryEl = document.createElement('p');
-      summaryEl.className = 'search-summary';
-      summaryEl.textContent = summaryText;
-      popupSearchBody.appendChild(summaryEl);
-    }
-
-    const count = results.length;
-    if (count === 0) {
-      const empty = document.createElement('p');
-      empty.textContent = 'No results. Try another term.';
-      popupSearchBody.appendChild(empty);
-    } else {
-      const list = document.createElement('div');
-      list.className = 'search-list';
-      results.forEach((r) => {
-        const a = document.createElement('a');
-        a.className = 'search-row';
-        a.href = r.url;
-        a.innerHTML = `<img class="search-thumb" src="${r.image || ''}" alt=""/><div><div class="chip small">${r.tag || ''}</div><h4 class="search-title">${r.title}</h4><p class="search-brief">${r.brief || ''}</p></div>`;
-        list.appendChild(a);
-      });
-      popupSearchBody.appendChild(list);
-    }
-    showPopup(popupSearch);
-  }
-
-  async function runSearch(q) {
-    const query = norm(q);
-    if (!query) return;
-
-    const onIndex = location.pathname.endsWith('/') || location.pathname.endsWith('/index.html');
-    let results = [];
-    let summary = '';
-    let errorNote = '';
-
-    const endpoint = (typeof window !== 'undefined' && window.SEARCH_API_URL) || '/.netlify/functions/search';
-
-    try {
-      const res = await fetch(`${endpoint}?q=${encodeURIComponent(query)}`, {
-        headers: { 'Accept': 'application/json' },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data.results)) {
-          results = data.results.map((item) => ({
-            url: item.url,
-            title: item.title,
-            tag: item.tag,
-            brief: item.brief,
-            image: item.image,
-          }));
-        }
-        if (typeof data.summary === 'string') {
-          summary = data.summary;
-        }
-        if (typeof data.error === 'string') {
-          errorNote = data.error;
-        }
-      } else {
-        const detail = await res.text();
-        errorNote = `Search service error (${res.status}).`;
-        console.error('Semantic search HTTP error', res.status, detail);
-      }
-    } catch (error) {
-      console.error('Semantic search failed', error);
-      errorNote = 'Search service unreachable. Using fallback results.';
-    }
-
-    if (!results.length) {
-      // Fallback to keyword search
-      const tokens = tokenize(query);
-      const idx = await fetchIndex();
-      const dom = onIndex ? domCards() : [];
-      const merged = [...dom, ...idx];
-      const seen = new Set();
-      results = merged
-        .filter((it) => { if (seen.has(it.url)) return false; seen.add(it.url); return true; })
-        .map((it, i) => ({ it, s: scoreItem(it, tokens), i }))
-        .filter(x => x.s > 0)
-        .sort((a, b) => (b.s - a.s) || (a.i - b.i))
-        .map(x => x.it);
-
-      if (results.length) {
-        summary = `Showing related articles for “${q}”.`;
-      }
-    }
-
-    if (!results.length) {
-      const notice = errorNote ? `${errorNote} No results.` : 'No results.';
-      if (msg) msg.textContent = notice;
-      popupSearchBody.innerHTML = `<p>${notice}</p>`;
-      showPopup(popupSearch);
-      return;
-    }
-
-    const finalSummary = summary || errorNote || `Top matches for “${q}”.`;
-    renderResultsPopup(results, finalSummary);
-  }
-
-  if (popupSearchClose) popupSearchClose.addEventListener('click', () => hidePopup(popupSearch));
-
-  function handleSubmit(e) { if (e) e.preventDefault(); if (msg) msg.textContent = ''; runSearch(input.value); }
-  if (goBtn) goBtn.addEventListener('click', handleSubmit);
-  if (input) {
-    // Prevent default submit and stop propagation so popup doesn't instantly close
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); handleSubmit(); }
-    });
-    // Wrap in a form guard if ever inside a form
-    const form = input.closest('form');
-    if (form) form.addEventListener('submit', (e) => { e.preventDefault(); handleSubmit(); });
-  }
+  applyCardFilters();
 })();
