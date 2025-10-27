@@ -1,83 +1,326 @@
 /* Dock + Search + Modal */
-window.DOCK_CONFIG = window.DOCK_CONFIG || {
-  rotatingPlaceholders: [
-    'Search',
-  ],
-  modalHTML: `
-  <div class="info-popup">
-    <h2 class="info-title" id="dock-modal-title">Contact H-38</h2>
-    <div class="contact-grid contact-three">
-      <article class="contact-card plain">
-        <h4 class="contact-title">Call</h4>
-        <p class="contact-link">+971 528 915 205<br/>+91 8000 235 253</p>
-      </article>
-      <article class="contact-card plain">
-        <h4 class="contact-title">Email</h4>
-        <p class="contact-link"><a href="mailto:connect@h-38.com" target="_blank" rel="noopener">connect@h-38.com</a></p>
-      </article>
-      <article class="contact-card plain">
-        <h4 class="contact-title">Social</h4>
-        <p class="contact-link"><a href="https://www.instagram.com/h.hyphen.38/" target="_blank" rel="noopener">Instagram</a><br/><a href="https://www.linkedin.com/company/h-38" target="_blank" rel="noopener">LinkedIn</a></p>
-      </article>
+const DOCK_DEFAULT_PLACEHOLDERS = ['Search'];
+const DOCK_DEFAULT_FILTERS = [
+  { value: 'all', label: 'All', selected: true },
+  { value: 'research', label: 'Research' },
+  { value: 'news', label: 'News' },
+  { value: 'project', label: 'Project' },
+  { value: 'conversation', label: 'Conversation' },
+  { value: 'foresight', label: 'Foresight' },
+];
+const DOCK_DEFAULT_MODAL = `
+  <div class="pages-preview">
+    <h2 class="pages-intro" id="pages-overlay-title">We’re a problem-solving studio for the built world, at the hyphen of design, making, and operations. From the UAE, we help teams worldwide build better places for people and planet.</h2>
+    <div class="pages-sections">
+      <section class="overlay-section">
+        <span class="overlay-section-index">01 — Strategy &amp; Technology</span>
+        <div class="overlay-section-copy">
+          <h3 class="overlay-section-title">We align decision-making with systems.</h3>
+          <p class="overlay-section-body">Start with how the organisation works today, define where it needs to go, and implement the tools and workflows to get there efficiently.</p>
+          <div class="overlay-service-table" role="table" aria-label="Strategy &amp; Technology services">
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">Digital Transformation Strategy</span>
+              <span class="overlay-service-desc" role="cell">Map current workflows, define future-state processes, set roadmap for tools and standards.</span>
+            </div>
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">BIM &amp; Information Standards</span>
+              <span class="overlay-service-desc" role="cell">Establish models, naming, data structure, drawing standards, coordination workflows.</span>
+            </div>
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">Parametric &amp; Generative Design Frameworks</span>
+              <span class="overlay-service-desc" role="cell">Create rule-based design systems to improve speed, repeatability, and performance.</span>
+            </div>
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">Cost–Performance Modeling</span>
+              <span class="overlay-service-desc" role="cell">Link material choices, structural options, and systems to cost and operational outcomes.</span>
+            </div>
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">Sustainability &amp; Carbon Strategy</span>
+              <span class="overlay-service-desc" role="cell">Set measurable performance targets, track embodied and operational carbon, evaluate alternatives.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <figure class="overlay-section-image">
+        <img src="assets/H-38 Branding.png" alt="Workflow collaboration across the built environment" loading="lazy">
+      </figure>
+      <section class="overlay-section">
+        <span class="overlay-section-index">02 — Automation &amp; Operations</span>
+        <div class="overlay-section-copy">
+          <h3 class="overlay-section-title">We make work faster and repeatable.</h3>
+          <p class="overlay-section-body">Focus is on eliminating manual steps, errors, and repetitive coordination.</p>
+          <div class="overlay-service-table" role="table" aria-label="Automation &amp; Operations services">
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">Workflow Automation</span>
+              <span class="overlay-service-desc" role="cell">Integrate Notion/Airtable with n8n to automate intake, routing, approvals, notifications.</span>
+            </div>
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">ERP + Manufacturing Integration</span>
+              <span class="overlay-service-desc" role="cell">Sync design information with procurement, fabrication, inventory, and installation.</span>
+            </div>
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">3D Scanning → BIM/Model Pipelines</span>
+              <span class="overlay-service-desc" role="cell">Capture reality, clean point clouds, generate working models, link to design and FM systems.</span>
+            </div>
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">Field Reporting &amp; QA Systems</span>
+              <span class="overlay-service-desc" role="cell">Mobile checklists, site logs, snagging workflows, handover documentation automation.</span>
+            </div>
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">Digital Twins for Operations</span>
+              <span class="overlay-service-desc" role="cell">Live data + model linked dashboards for maintenance, planning, and energy use tracking.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="overlay-section">
+        <span class="overlay-section-index">03 — Design Intelligence &amp; Tooling</span>
+        <div class="overlay-section-copy">
+          <h3 class="overlay-section-title">We build tools that extend your design capabilities.</h3>
+          <p class="overlay-section-body">These tools help teams evaluate options, make decisions, and communicate more clearly.</p>
+          <div class="overlay-service-table" role="table" aria-label="Design Intelligence &amp; Tooling services">
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">Performance Scoring Models</span>
+              <span class="overlay-service-desc" role="cell">Evaluate ventilation, daylight, adjacency, comfort, and urban context in measurable terms.</span>
+            </div>
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">Computational Design Tooling</span>
+              <span class="overlay-service-desc" role="cell">Custom Grasshopper scripts, plugins, Python tooling for internal workflows.</span>
+            </div>
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">VR/AR Walkthrough Systems</span>
+              <span class="overlay-service-desc" role="cell">Interactive review environments for client decisions and on-site understanding.</span>
+            </div>
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">Layout &amp; Space Optimization Engines</span>
+              <span class="overlay-service-desc" role="cell">Algorithmic planning for schools, hospitals, offices, housing, retail.</span>
+            </div>
+            <div class="overlay-service-row" role="row">
+              <span class="overlay-service-name" role="cell">Design &amp; Specification Libraries</span>
+              <span class="overlay-service-desc" role="cell">Standardised components, assemblies, materials, and detailing knowledge bases.</span>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
-  `,
-};
+`;
+
+window.DOCK_CONFIG = window.DOCK_CONFIG || {};
+if (!Array.isArray(window.DOCK_CONFIG.rotatingPlaceholders) || !window.DOCK_CONFIG.rotatingPlaceholders.length) {
+  window.DOCK_CONFIG.rotatingPlaceholders = [...DOCK_DEFAULT_PLACEHOLDERS];
+}
+if (!Array.isArray(window.DOCK_CONFIG.tagFilters) || !window.DOCK_CONFIG.tagFilters.length) {
+  window.DOCK_CONFIG.tagFilters = DOCK_DEFAULT_FILTERS.map((filter) => ({ ...filter }));
+}
+if (typeof window.DOCK_CONFIG.modalHTML !== 'string') {
+  window.DOCK_CONFIG.modalHTML = DOCK_DEFAULT_MODAL;
+}
 
 (function () {
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const byId = (id) => document.getElementById(id);
 
-  const heroOverlay = byId('hero-overlay');
-  const heroEnter = byId('hero-enter');
   const siteMain = byId('site-main');
   const dock = document.querySelector('.site-dock');
+  const dockInner = dock ? dock.querySelector('.dock-inner') : null;
+
+  buildDock(dockInner);
+
   const input = byId('dock-search');
   const msg = byId('dock-msg');
-  const callBtn = byId('top-call');
+  const pagesBtn = byId('dock-pages');
   const filterToggle = byId('filter-toggle');
   const filterMenu = byId('filter-menu');
   const filterWrapper = document.querySelector('.filter-wrapper');
   const filterOptions = $$('.filter-option');
+  const sectionAnchors = $$('.dock-link[data-section-target]');
   let activeTag = 'all';
-  const backdrop = byId('dock-backdrop');
-  // Popups
-  const popupInfo = byId('popup-info');
-  const popupInfoContent = byId('popup-info-content');
-  const popupInfoClose = byId('popup-info-close');
-  let searchQuery = '';
-
-  function showHero() {
-    if (heroOverlay) heroOverlay.classList.remove('is-hidden');
-    if (siteMain) siteMain.classList.add('is-hidden');
-    if (dock) dock.classList.add('is-hidden');
-    document.body.classList.add('hero-active');
+  if (filterOptions.length) {
+    const defaultFilter = filterOptions.find((btn) => btn.classList.contains('is-selected'));
+    if (defaultFilter) {
+      activeTag = (defaultFilter.dataset.filter || 'all').toLowerCase();
+    }
   }
+  const pagesOverlay = byId('pages-overlay');
+  const pagesOverlayContent = byId('pages-overlay-content');
+  const pagesClose = byId('pages-close');
 
-  function hideHero() {
-    if (heroOverlay) heroOverlay.classList.add('is-hidden');
-    if (siteMain) siteMain.classList.remove('is-hidden');
-    if (dock) dock.classList.remove('is-hidden');
-    document.body.classList.remove('hero-active');
-  }
-
-  const heroSeen = sessionStorage.getItem('heroSeen') === '1';
-  if (heroOverlay && siteMain && dock) {
-    if (heroSeen) {
-      hideHero();
+  function buildDock(inner) {
+    if (!inner) return;
+    const sections = getSectionItems();
+    let mode = document.body.dataset.dockMode || 'sections';
+    if (mode === 'sections' && !sections.length) {
+      mode = 'lab';
+    }
+    document.body.dataset.dockMode = mode;
+    inner.innerHTML = '';
+    if (mode === 'lab') {
+      inner.appendChild(createLabDock());
     } else {
-      showHero();
+      inner.appendChild(createSectionDock(sections));
     }
   }
 
-  if (heroEnter) {
-    heroEnter.addEventListener('click', () => {
-      sessionStorage.setItem('heroSeen', '1');
-      hideHero();
+  function createLabDock() {
+    const container = document.createElement('div');
+    container.className = 'dock-search';
+
+    const filterWrapperEl = document.createElement('div');
+    filterWrapperEl.className = 'filter-wrapper';
+
+    const filterButton = document.createElement('button');
+    filterButton.className = 'filter-button';
+    filterButton.id = 'filter-toggle';
+    filterButton.type = 'button';
+    filterButton.setAttribute('aria-expanded', 'false');
+    filterButton.setAttribute('aria-controls', 'filter-menu');
+
+    const filterIcon = document.createElement('img');
+    filterIcon.src = 'assets/icons/filter.svg';
+    filterIcon.alt = 'Open filters';
+    filterButton.appendChild(filterIcon);
+
+    const filterMenuEl = document.createElement('div');
+    filterMenuEl.className = 'filter-menu';
+    filterMenuEl.id = 'filter-menu';
+    filterMenuEl.hidden = true;
+
+    const filterList = document.createElement('ul');
+    filterList.className = 'filter-options';
+
+    (window.DOCK_CONFIG.tagFilters || []).forEach((filter) => {
+      if (!filter || !filter.value || !filter.label) return;
+      const li = document.createElement('li');
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'filter-option';
+      if (filter.selected) btn.classList.add('is-selected');
+      btn.dataset.filter = filter.value;
+      btn.textContent = filter.label;
+      li.appendChild(btn);
+      filterList.appendChild(li);
     });
+
+    if (!filterList.children.length) {
+      const li = document.createElement('li');
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'filter-option is-selected';
+      btn.dataset.filter = 'all';
+      btn.textContent = 'All';
+      li.appendChild(btn);
+      filterList.appendChild(li);
+    }
+
+    filterMenuEl.appendChild(filterList);
+    filterWrapperEl.append(filterButton, filterMenuEl);
+    container.appendChild(filterWrapperEl);
+
+    const inputWrap = document.createElement('div');
+    inputWrap.className = 'dock-input-wrap';
+
+    const icon = document.createElement('img');
+    icon.className = 'icon icon-left';
+    icon.src = 'assets/icons/search.svg';
+    icon.alt = '';
+    icon.setAttribute('aria-hidden', 'true');
+
+    const inputEl = document.createElement('input');
+    inputEl.id = 'dock-search';
+    inputEl.className = 'dock-input has-icons';
+    inputEl.type = 'search';
+    inputEl.placeholder = (window.DOCK_CONFIG.rotatingPlaceholders || DOCK_DEFAULT_PLACEHOLDERS)[0] || 'Search';
+    inputEl.setAttribute('aria-label', 'Search articles');
+
+    inputWrap.append(icon, inputEl);
+    container.appendChild(inputWrap);
+
+    const msg = document.createElement('span');
+    msg.className = 'dock-msg';
+    msg.id = 'dock-msg';
+    msg.setAttribute('aria-live', 'polite');
+    container.appendChild(msg);
+
+    container.appendChild(createLogoButton());
+
+    return container;
   }
 
+  function createSectionDock(sections) {
+    const container = document.createElement('div');
+    container.className = 'dock-simple';
+
+    const linksWrap = document.createElement('div');
+    linksWrap.className = 'dock-links';
+
+    if (!sections.length) {
+      const placeholder = document.createElement('span');
+      placeholder.className = 'dock-link';
+      placeholder.textContent = 'Sections coming soon';
+      placeholder.setAttribute('aria-disabled', 'true');
+      linksWrap.appendChild(placeholder);
+    } else {
+      sections.forEach((section) => {
+        const anchor = document.createElement('a');
+        anchor.className = 'dock-link';
+        anchor.href = `#${section.id}`;
+        anchor.textContent = section.label;
+        anchor.dataset.sectionTarget = section.id;
+        linksWrap.appendChild(anchor);
+      });
+    }
+
+    container.appendChild(linksWrap);
+    container.appendChild(createLogoButton());
+    return container;
+  }
+
+  function createLogoButton() {
+    const btn = document.createElement('button');
+    btn.className = 'dock-pages';
+    btn.id = 'dock-pages';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Open H-38 pages view');
+    btn.setAttribute('aria-controls', 'pages-overlay');
+    btn.setAttribute('aria-expanded', 'false');
+
+    const img = document.createElement('img');
+    img.src = 'assets/H-38 Logo.png';
+    img.alt = 'H-38 logo';
+    btn.appendChild(img);
+    return btn;
+  }
+
+  function getSectionItems() {
+    const nodes = Array.from(document.querySelectorAll('[data-dock-label]'));
+    return nodes.map((node, index) => {
+      const label = (node.dataset.dockLabel || '').trim();
+      if (!label) return null;
+      let id = node.id;
+      if (!id) {
+        id = `section-${index + 1}`;
+        node.id = id;
+      }
+      return { id, label };
+    }).filter(Boolean);
+  }
+
+  let searchQuery = '';
+  const EDGE_PADDING = 16;
+
+  function alignFilterMenu() {
+    if (!filterMenu || filterMenu.hidden || !filterWrapper || !dock) return;
+    const wrapperRect = filterWrapper.getBoundingClientRect();
+    const dockRect = dock.getBoundingClientRect();
+    let leftOffset = dockRect.left - wrapperRect.left;
+    const minViewport = EDGE_PADDING - wrapperRect.left;
+    leftOffset = Math.max(leftOffset, minViewport);
+    filterMenu.style.left = `${leftOffset}px`;
+  }
+
+  window.addEventListener('resize', alignFilterMenu, { passive: true });
   // Rotate placeholders
   let phIndex = 0;
   let phTimer = null;
@@ -98,62 +341,84 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
     input.addEventListener('input', (e) => updateSearch(e.target.value));
   }
 
-  // Popup helpers
+  // Pages overlay
   let lastFocus = null;
-  let justOpened = false;
-  function showPopup(el) {
-    lastFocus = document.activeElement;
+  let siteMainWasHidden = false;
+  let dockWasHidden = false;
 
-    backdrop.style.display = 'block';
-    el.style.display = 'block';
-    el.classList.remove('hide');
-    el.classList.add('show');
-    trapFocus(el);
-    const first = el.querySelector('button, [href], input, [tabindex]:not([tabindex="-1"])');
-    if (first) first.focus();
-    // Prevent immediate outside-click close from the same event frame
-    justOpened = true;
-    requestAnimationFrame(() => { justOpened = false; });
-  }
-  function hidePopup(el) {
-    el.classList.remove('show');
-    el.classList.add('hide');
-    const done = () => {
-      el.style.display = 'none';
-      backdrop.style.display = 'none';
-      releaseFocus();
-      if (lastFocus) lastFocus.focus();
-      el.removeEventListener('animationend', done);
-    };
-    el.addEventListener('animationend', done);
-    // Fallback when reduced motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) done();
-  }
-  function outsideClick(e) {
-    if (justOpened) return;
-    if (e.target === backdrop) {
-      if (popupInfo.style.display === 'block') hidePopup(popupInfo);
-    }
-  }
-  if (backdrop) backdrop.addEventListener('click', outsideClick);
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      if (popupInfo.style.display === 'block') hidePopup(popupInfo);
-    }
-  });
-  if (callBtn) {
-    callBtn.addEventListener('click', (ev) => {
-      ev.preventDefault();
-      const isOpen = popupInfo.style.display === 'block';
-      if (isOpen) {
-        hidePopup(popupInfo);
-        return;
+  function openPagesOverlay(trigger = null) {
+    if (!pagesOverlay || !pagesOverlayContent) return;
+    lastFocus = document.activeElement;
+    pagesOverlayContent.innerHTML = DOCK_CONFIG.modalHTML || '';
+    pagesOverlay.classList.remove('is-hidden');
+    pagesOverlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('pages-overlay-active');
+    siteMainWasHidden = siteMain ? siteMain.classList.contains('is-hidden') : false;
+    dockWasHidden = dock ? dock.classList.contains('is-hidden') : false;
+    if (siteMain && !siteMainWasHidden) siteMain.classList.add('is-hidden');
+    if (dock && !dockWasHidden) dock.classList.add('is-hidden');
+    trapFocus(pagesOverlay);
+    if (trigger) trigger.setAttribute('aria-expanded', 'true');
+    if (pagesBtn) pagesBtn.setAttribute('aria-expanded', 'true');
+    requestAnimationFrame(() => {
+      const focusTarget = pagesOverlay.querySelector('[data-focus-first], .pages-close, button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (focusTarget && typeof focusTarget.focus === 'function') {
+        focusTarget.focus({ preventScroll: true });
+      } else if (pagesOverlayContent && typeof pagesOverlayContent.focus === 'function') {
+        pagesOverlayContent.focus({ preventScroll: true });
       }
-      popupInfoContent.innerHTML = DOCK_CONFIG.modalHTML || '';
-      showPopup(popupInfo);
     });
   }
-  if (popupInfoClose) popupInfoClose.addEventListener('click', () => hidePopup(popupInfo));
+
+  function closePagesOverlay() {
+    if (!pagesOverlay) return;
+    pagesOverlay.classList.add('is-hidden');
+    pagesOverlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('pages-overlay-active');
+    if (siteMain && !siteMainWasHidden) siteMain.classList.remove('is-hidden');
+    if (dock && !dockWasHidden) dock.classList.remove('is-hidden');
+    releaseFocus();
+    if (pagesBtn) pagesBtn.setAttribute('aria-expanded', 'false');
+    if (lastFocus && typeof lastFocus.focus === 'function') {
+      lastFocus.focus({ preventScroll: true });
+    }
+    lastFocus = null;
+    siteMainWasHidden = false;
+    dockWasHidden = false;
+  }
+
+  if (pagesBtn && pagesOverlay) {
+    pagesBtn.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      const hidden = pagesOverlay.classList.contains('is-hidden');
+      if (hidden) {
+        openPagesOverlay(pagesBtn);
+      } else {
+        closePagesOverlay();
+      }
+    });
+  }
+
+  if (pagesClose) {
+    pagesClose.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      closePagesOverlay();
+    });
+  }
+
+  if (pagesOverlay) {
+    pagesOverlay.addEventListener('click', (ev) => {
+      if (ev.target === pagesOverlay) {
+        closePagesOverlay();
+      }
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && pagesOverlay && !pagesOverlay.classList.contains('is-hidden')) {
+      closePagesOverlay();
+    }
+  });
 
   function applyCardFilters() {
     const cards = $$('.card');
@@ -179,6 +444,11 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
     const setMenuState = (open) => {
       filterMenu.hidden = !open;
       filterToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) {
+        requestAnimationFrame(alignFilterMenu);
+      } else {
+        filterMenu.style.left = '';
+      }
     };
     filterToggle.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -240,5 +510,49 @@ window.DOCK_CONFIG = window.DOCK_CONFIG || {
     applyCardFilters();
   }
 
+  function initSectionNav(anchors) {
+    if (!anchors || !anchors.length) return;
+    const pairs = anchors.map((anchor) => {
+      const targetId = anchor.dataset.sectionTarget;
+      if (!targetId) return null;
+      const target = document.getElementById(targetId);
+      if (!target) return null;
+      return { anchor, target };
+    }).filter(Boolean);
+
+    if (!pairs.length) return;
+
+    const setActiveSection = (id) => {
+      pairs.forEach(({ anchor }) => {
+        const isActive = anchor.dataset.sectionTarget === id;
+        anchor.classList.toggle('is-active', isActive);
+        if (isActive) {
+          anchor.setAttribute('aria-current', 'true');
+        } else {
+          anchor.removeAttribute('aria-current');
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+      if (visible.length) {
+        setActiveSection(visible[0].target.id);
+      }
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: [0.1, 0.3, 0.6] });
+
+    pairs.forEach(({ target }) => observer.observe(target));
+    setActiveSection(pairs[0].target.id);
+
+    anchors.forEach((anchor) => {
+      anchor.addEventListener('click', () => {
+        setActiveSection(anchor.dataset.sectionTarget);
+      });
+    });
+  }
+
+  initSectionNav(sectionAnchors);
   applyCardFilters();
 })();
