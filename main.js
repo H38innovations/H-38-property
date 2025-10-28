@@ -9,101 +9,145 @@ const DOCK_DEFAULT_FILTERS = [
   { value: 'foresight', label: 'Foresight' },
 ];
 const DOCK_DEFAULT_MODAL = `
-  <div class="pages-preview">
-    <h2 class="pages-intro" id="pages-overlay-title">We’re a problem-solving studio for the built world, at the hyphen of design, making, and operations. From the UAE, we help teams worldwide build better places for people and planet.</h2>
-    <div class="pages-sections">
-      <section class="overlay-section">
-        <span class="overlay-section-index">01 — Strategy &amp; Technology</span>
-        <div class="overlay-section-copy">
-          <h3 class="overlay-section-title">We align decision-making with systems.</h3>
-          <p class="overlay-section-body">Start with how the organisation works today, define where it needs to go, and implement the tools and workflows to get there efficiently.</p>
-          <div class="overlay-service-table" role="table" aria-label="Strategy &amp; Technology services">
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">Digital Transformation Strategy</span>
-              <span class="overlay-service-desc" role="cell">Map current workflows, define future-state processes, set roadmap for tools and standards.</span>
-            </div>
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">BIM &amp; Information Standards</span>
-              <span class="overlay-service-desc" role="cell">Establish models, naming, data structure, drawing standards, coordination workflows.</span>
-            </div>
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">Parametric &amp; Generative Design Frameworks</span>
-              <span class="overlay-service-desc" role="cell">Create rule-based design systems to improve speed, repeatability, and performance.</span>
-            </div>
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">Cost–Performance Modeling</span>
-              <span class="overlay-service-desc" role="cell">Link material choices, structural options, and systems to cost and operational outcomes.</span>
-            </div>
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">Sustainability &amp; Carbon Strategy</span>
-              <span class="overlay-service-desc" role="cell">Set measurable performance targets, track embodied and operational carbon, evaluate alternatives.</span>
-            </div>
-          </div>
-        </div>
-      </section>
-      <figure class="overlay-section-image">
-        <img src="assets/H-38 Branding.png" alt="Workflow collaboration across the built environment" loading="lazy">
-      </figure>
-      <section class="overlay-section">
-        <span class="overlay-section-index">02 — Automation &amp; Operations</span>
-        <div class="overlay-section-copy">
-          <h3 class="overlay-section-title">We make work faster and repeatable.</h3>
-          <p class="overlay-section-body">Focus is on eliminating manual steps, errors, and repetitive coordination.</p>
-          <div class="overlay-service-table" role="table" aria-label="Automation &amp; Operations services">
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">Workflow Automation</span>
-              <span class="overlay-service-desc" role="cell">Integrate Notion/Airtable with n8n to automate intake, routing, approvals, notifications.</span>
-            </div>
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">ERP + Manufacturing Integration</span>
-              <span class="overlay-service-desc" role="cell">Sync design information with procurement, fabrication, inventory, and installation.</span>
-            </div>
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">3D Scanning → BIM/Model Pipelines</span>
-              <span class="overlay-service-desc" role="cell">Capture reality, clean point clouds, generate working models, link to design and FM systems.</span>
-            </div>
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">Field Reporting &amp; QA Systems</span>
-              <span class="overlay-service-desc" role="cell">Mobile checklists, site logs, snagging workflows, handover documentation automation.</span>
-            </div>
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">Digital Twins for Operations</span>
-              <span class="overlay-service-desc" role="cell">Live data + model linked dashboards for maintenance, planning, and energy use tracking.</span>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="overlay-section">
-        <span class="overlay-section-index">03 — Design Intelligence &amp; Tooling</span>
-        <div class="overlay-section-copy">
-          <h3 class="overlay-section-title">We build tools that extend your design capabilities.</h3>
-          <p class="overlay-section-body">These tools help teams evaluate options, make decisions, and communicate more clearly.</p>
-          <div class="overlay-service-table" role="table" aria-label="Design Intelligence &amp; Tooling services">
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">Performance Scoring Models</span>
-              <span class="overlay-service-desc" role="cell">Evaluate ventilation, daylight, adjacency, comfort, and urban context in measurable terms.</span>
-            </div>
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">Computational Design Tooling</span>
-              <span class="overlay-service-desc" role="cell">Custom Grasshopper scripts, plugins, Python tooling for internal workflows.</span>
-            </div>
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">VR/AR Walkthrough Systems</span>
-              <span class="overlay-service-desc" role="cell">Interactive review environments for client decisions and on-site understanding.</span>
-            </div>
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">Layout &amp; Space Optimization Engines</span>
-              <span class="overlay-service-desc" role="cell">Algorithmic planning for schools, hospitals, offices, housing, retail.</span>
-            </div>
-            <div class="overlay-service-row" role="row">
-              <span class="overlay-service-name" role="cell">Design &amp; Specification Libraries</span>
-              <span class="overlay-service-desc" role="cell">Standardised components, assemblies, materials, and detailing knowledge bases.</span>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+  <div class="pages-preview loading">
+    <p>Loading studio overview…</p>
   </div>
+`;
+const OVERLAY_TEMPLATE_URL = 'overlay-content.html';
+const OVERLAY_FALLBACK_HTML = `
+<div class="pages-preview">
+  <h2 class="pages-intro" id="pages-overlay-title">We’re a problem-solving studio for the built world, at the hyphen of design, making, and operations. From the UAE, we help teams worldwide build better places for people and planet.</h2>
+  <div class="pages-sections">
+    <section class="overlay-section">
+      <span class="overlay-section-index">01 — Strategy &amp; Technology</span>
+      <div class="overlay-section-copy">
+        <h3 class="overlay-section-title">We align decision-making with systems.</h3>
+        <p class="overlay-section-body">Start with how the organisation works today, define where it needs to go, and implement the tools and workflows to get there efficiently.</p>
+        <div class="overlay-service-table" role="table" aria-label="Strategy &amp; Technology services">
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">Digital Transformation Strategy</span>
+            <span class="overlay-service-desc" role="cell">Map current workflows, define future-state processes, set roadmap for tools and standards.</span>
+          </div>
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">BIM &amp; Information Standards</span>
+            <span class="overlay-service-desc" role="cell">Establish models, naming, data structure, drawing standards, coordination workflows.</span>
+          </div>
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">Parametric &amp; Generative Design Frameworks</span>
+            <span class="overlay-service-desc" role="cell">Create rule-based design systems to improve speed, repeatability, and performance.</span>
+          </div>
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">Cost–Performance Modeling</span>
+            <span class="overlay-service-desc" role="cell">Link material choices, structural options, and systems to cost and operational outcomes.</span>
+          </div>
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">Sustainability &amp; Carbon Strategy</span>
+            <span class="overlay-service-desc" role="cell">Set measurable performance targets, track embodied and operational carbon, evaluate alternatives.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <figure class="overlay-section-image">
+      <img src="assets/H-38 Branding.png" alt="Workflow collaboration across the built environment" loading="lazy">
+    </figure>
+    <section class="overlay-section">
+      <span class="overlay-section-index">02 — Automation &amp; Operations</span>
+      <div class="overlay-section-copy">
+        <h3 class="overlay-section-title">We make work faster and repeatable.</h3>
+        <p class="overlay-section-body">Focus is on eliminating manual steps, errors, and repetitive coordination.</p>
+        <div class="overlay-service-table" role="table" aria-label="Automation &amp; Operations services">
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">Workflow Automation</span>
+            <span class="overlay-service-desc" role="cell">Integrate Notion/Airtable with n8n to automate intake, routing, approvals, notifications.</span>
+          </div>
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">ERP + Manufacturing Integration</span>
+            <span class="overlay-service-desc" role="cell">Sync design information with procurement, fabrication, inventory, and installation.</span>
+          </div>
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">3D Scanning → BIM/Model Pipelines</span>
+            <span class="overlay-service-desc" role="cell">Capture reality, clean point clouds, generate working models, link to design and FM systems.</span>
+          </div>
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">Field Reporting &amp; QA Systems</span>
+            <span class="overlay-service-desc" role="cell">Mobile checklists, site logs, snagging workflows, handover documentation automation.</span>
+          </div>
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">Digital Twins for Operations</span>
+            <span class="overlay-service-desc" role="cell">Live data + model linked dashboards for maintenance, planning, and energy use tracking.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <figure class="overlay-section-image">
+      <img src="assets/H-38 Branding.png" alt="Team coordination across digital and physical environments" loading="lazy">
+    </figure>
+    <section class="overlay-section">
+      <span class="overlay-section-index">03 — Design Intelligence &amp; Tooling</span>
+      <div class="overlay-section-copy">
+        <h3 class="overlay-section-title">We build tools that extend your design capabilities.</h3>
+        <p class="overlay-section-body">These tools help teams evaluate options, make decisions, and communicate more clearly.</p>
+        <div class="overlay-service-table" role="table" aria-label="Design Intelligence &amp; Tooling services">
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">Performance Scoring Models</span>
+            <span class="overlay-service-desc" role="cell">Evaluate ventilation, daylight, adjacency, comfort, and urban context in measurable terms.</span>
+          </div>
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">Computational Design Tooling</span>
+            <span class="overlay-service-desc" role="cell">Custom Grasshopper scripts, plugins, Python tooling for internal workflows.</span>
+          </div>
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">VR/AR Walkthrough Systems</span>
+            <span class="overlay-service-desc" role="cell">Interactive review environments for client decisions and on-site understanding.</span>
+          </div>
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">Layout &amp; Space Optimization Engines</span>
+            <span class="overlay-service-desc" role="cell">Algorithmic planning for schools, hospitals, offices, housing, retail.</span>
+          </div>
+          <div class="overlay-service-row" role="row">
+            <span class="overlay-service-name" role="cell">Design &amp; Specification Libraries</span>
+            <span class="overlay-service-desc" role="cell">Standardised components, assemblies, materials, and detailing knowledge bases.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="overlay-contact">
+      <div class="overlay-contact-copy">
+        <h3 class="overlay-contact-title">Drop us a line</h3>
+        <p class="overlay-contact-lede">We’d love to hear from you. If you’re navigating complex delivery challenges or building better places, reach out and we’ll find the right way to work together.</p>
+      </div>
+      <div class="overlay-contact-grid">
+        <article class="overlay-contact-card">
+          <img src="assets/icons/contact.svg" alt="" aria-hidden="true" class="overlay-contact-icon">
+          <div class="overlay-contact-body">
+            <h4 class="overlay-contact-name">Adnan Raza</h4>
+            <p class="overlay-contact-role">Director, Strategy &amp; Technology</p>
+            <p class="overlay-contact-phone">+971 50 123 4567</p>
+            <a href="mailto:adnan@h-38.com" class="overlay-contact-link">adnan@h-38.com</a>
+          </div>
+        </article>
+        <article class="overlay-contact-card">
+          <img src="assets/icons/contact.svg" alt="" aria-hidden="true" class="overlay-contact-icon">
+          <div class="overlay-contact-body">
+            <h4 class="overlay-contact-name">Iman Al Qasimi</h4>
+            <p class="overlay-contact-role">Head of Automation &amp; Operations</p>
+            <p class="overlay-contact-phone">+971 50 765 4321</p>
+            <a href="mailto:iman@h-38.com" class="overlay-contact-link">iman@h-38.com</a>
+          </div>
+        </article>
+        <article class="overlay-contact-card">
+          <img src="assets/icons/contact.svg" alt="" aria-hidden="true" class="overlay-contact-icon">
+          <div class="overlay-contact-body">
+            <h4 class="overlay-contact-name">Leo Martinez</h4>
+            <p class="overlay-contact-role">Principal, Design Intelligence</p>
+            <p class="overlay-contact-phone">+971 52 246 8100</p>
+            <a href="mailto:leo@h-38.com" class="overlay-contact-link">leo@h-38.com</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+</div>
 `;
 
 window.DOCK_CONFIG = window.DOCK_CONFIG || {};
@@ -143,11 +187,45 @@ if (typeof window.DOCK_CONFIG.modalHTML !== 'string') {
       activeTag = (defaultFilter.dataset.filter || 'all').toLowerCase();
     }
   }
-  const pagesOverlay = byId('pages-overlay');
-  const pagesOverlayContent = byId('pages-overlay-content');
-  const pagesClose = byId('pages-close');
+const pagesOverlay = byId('pages-overlay');
+const pagesOverlayContent = byId('pages-overlay-content');
+const pagesClose = byId('pages-close');
+let overlayLoaded = false;
+let overlayLoadRequested = false;
+loadOverlayTemplate();
 
-  function buildDock(inner) {
+function loadOverlayTemplate(force = false) {
+  if (overlayLoaded) return;
+  if (overlayLoadRequested && !force) return;
+  overlayLoadRequested = true;
+  fetch(new URL(OVERLAY_TEMPLATE_URL, document.baseURI), { cache: 'no-store', credentials: 'same-origin' })
+    .then((res) => {
+      if (!res.ok) throw new Error(`Template load failed: ${res.status}`);
+      return res.text();
+    })
+    .then((html) => {
+      const markup = (typeof html === 'string' ? html.trim() : '');
+      if (markup) {
+        applyOverlayMarkup(markup);
+      } else {
+        applyOverlayMarkup(OVERLAY_FALLBACK_HTML.trim());
+      }
+    })
+    .catch(() => {
+      applyOverlayMarkup(OVERLAY_FALLBACK_HTML.trim());
+    });
+}
+
+function applyOverlayMarkup(html) {
+  window.DOCK_CONFIG.modalHTML = html;
+  overlayLoaded = true;
+  overlayLoadRequested = false;
+  if (pagesOverlayContent && pagesOverlay && !pagesOverlay.classList.contains('is-hidden')) {
+    pagesOverlayContent.innerHTML = html;
+  }
+}
+
+function buildDock(inner) {
     if (!inner) return;
     const sections = getSectionItems();
     let mode = document.body.dataset.dockMode || 'sections';
@@ -348,6 +426,7 @@ if (typeof window.DOCK_CONFIG.modalHTML !== 'string') {
 
   function openPagesOverlay(trigger = null) {
     if (!pagesOverlay || !pagesOverlayContent) return;
+    if (!overlayLoaded) loadOverlayTemplate();
     lastFocus = document.activeElement;
     pagesOverlayContent.innerHTML = DOCK_CONFIG.modalHTML || '';
     pagesOverlay.classList.remove('is-hidden');
