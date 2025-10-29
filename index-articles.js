@@ -1,4 +1,4 @@
-// Script to index all articles with AI embeddings
+p// Script to index all articles with AI embeddings
 import * as cheerio from 'cheerio';
 import { readFileSync } from 'fs';
 import { config } from 'dotenv';
