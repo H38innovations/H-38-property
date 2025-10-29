@@ -13,28 +13,8 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <header class="site-top">
-      <a class="top-logo" href="/"><img src="assets/H-38 Logo.png" alt="H-38 logo" /></a>
-    </header>
-    <section class="hero-overlay" id="hero-overlay" aria-labelledby="hero-title">
-      <div class="hero-inner">
-        <div class="hero-copy">
-          <h1 class="hero-title" id="hero-title">
-            At the hyphen of design, making, and operations.<br/>
-            A better built environment for everyone.
-          </h1>
-          <p class="hero-subtext">
-            We work with teams that care about fabrication, craft, and delivery — helping them bring ambitious spatial experiences to life.
-          </p>
-          <button class="hero-enter" id="hero-enter">See what we are working on</button>
-        </div>
-        <div class="hero-media">
-          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&q=80" alt="Studio mood collage" />
-        </div>
-      </div>
-    </section>
-    <div id="site-main" class="site-main is-hidden">
+  <body data-dock-mode="lab">
+    <div id="site-main" class="site-main">
     <main class="container">
       <section class="card-grid">
         <article class="card" data-tag="research">
@@ -159,43 +139,21 @@
       </section>
     </main>
     </div>
-    <nav class="site-dock is-hidden" aria-label="Site dock">
-      <div class="dock-inner">
-        <div class="dock-search">
-          <div class="filter-wrapper">
-            <button class="filter-button" id="filter-toggle" type="button" aria-expanded="false" aria-controls="filter-menu">
-              <img src="assets/icons/filter.svg" alt="Open filters" />
-            </button>
-            <div class="filter-menu" id="filter-menu" hidden>
-              <button type="button" class="filter-option is-selected" data-filter="all">All</button>
-              <button type="button" class="filter-option" data-filter="research">Research</button>
-              <button type="button" class="filter-option" data-filter="news">News</button>
-              <button type="button" class="filter-option" data-filter="project">Project</button>
-              <button type="button" class="filter-option" data-filter="conversation">Conversation</button>
-              <button type="button" class="filter-option" data-filter="foresight">Foresight</button>
-            </div>
-          </div>
-          <div class="dock-input-wrap">
-            <img class="icon icon-left" src="assets/icons/search.svg" alt="" aria-hidden="true" />
-            <input id="dock-search" class="dock-input has-icons" type="search" placeholder="Search" aria-label="Search articles" />
-          </div>
-          <span class="dock-msg" id="dock-msg" aria-live="polite"></span>
-          <button class="dock-contact" id="top-call" aria-label="Contact H-38">
-            <img src="assets/icons/contact.svg" alt="Contact" />
-          </button>
-        </div>
-      </div>
+    <nav class="site-dock" aria-label="Site dock">
+      <div class="dock-inner"></div>
     </nav>
 
-    <div class="dock-backdrop" id="dock-backdrop"></div>
-    <div class="dock-popup info" id="popup-info" role="dialog" aria-modal="true" aria-labelledby="popup-info-title">
-      <div class="popup-card" tabindex="-1">
-        <button class="close" id="popup-info-close" aria-label="Close info">✕</button>
-        <div id="popup-info-content">
+    <section class="pages-overlay is-hidden" id="pages-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="pages-overlay-inner" role="document">
+        <button class="pages-close" id="pages-close" type="button" aria-label="Close pages view">
+          <span class="pages-close-lines" aria-hidden="true"></span>
+          <span class="sr-only">Close</span>
+        </button>
+        <div class="pages-overlay-content" id="pages-overlay-content" role="region" aria-labelledby="pages-overlay-title" tabindex="-1">
           <!-- Injected from DOCK_CONFIG.modalHTML -->
         </div>
       </div>
-    </div>
+    </section>
     <script src="main.js" defer></script>
   </body>
 </html>
