@@ -292,6 +292,70 @@ button:focus-visible {
   margin-top: 8px;
 }
 
+.article-contact {
+  margin-top: clamp(48px, 8vw, 96px);
+  background: #E9EAEC;
+  border-radius: 28px;
+  padding: clamp(40px, 6vw, 72px) 24px;
+}
+.article-contact-inner {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(24px, 4vw, 32px);
+}
+.article-contact-title {
+  margin: 0;
+  font-size: clamp(2.4rem, 5vw, 3.4rem);
+  font-weight: 800;
+  color: #23272A;
+  letter-spacing: -0.02em;
+}
+.article-contact-lede {
+  margin: 0;
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  line-height: 1.7;
+  color: #2E3236;
+}
+.article-contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: clamp(20px, 4vw, 36px);
+}
+.article-contact-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.article-contact-item h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #23272A;
+}
+.article-contact-text {
+  margin: 0;
+  color: #2E3236;
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+.article-contact-link {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #23272A;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.article-contact-link:hover {
+  color: #f49957;
+}
+
+@media (max-width: 700px) {
+  .article-contact {
+    padding: 32px 24px 48px;
+  }
+}
+
 /* Dock and modal */
 .site-dock { position: fixed; left: 50%; bottom: max(32px, env(safe-area-inset-bottom) + 28px); transform: translateX(-50%); width: min(1000px, calc(100vw - 54px)); background:#23272A; color: #F5F6F7; border-radius:28px; z-index:50; padding: 6px; }
 .dock-inner { display:flex; align-items:center; gap:14px; padding:8px 14px; position:relative; }
