@@ -16,7 +16,8 @@ const DOCK_DEFAULT_MODAL = `
 const OVERLAY_TEMPLATE_URL = 'overlay-content.html';
 const OVERLAY_FALLBACK_HTML = `
 <div class="pages-preview">
-  <h2 class="pages-intro" id="pages-overlay-title">We’re a problem-solving studio for the built world, at the hyphen of design, making, and operations. From the UAE, we help teams worldwide build better places for people and planet.</h2>
+  <h2 class="pages-intro" id="pages-overlay-title">We’re a problem-solving studio for the built world, at the hyphen of design, making, and operations.</h2>
+  <p class="pages-intro-body">From the UAE, we help teams worldwide build better places for people and planet.</p>
   <div class="pages-sections">
 
     <figure class="overlay-section-image">
@@ -577,8 +578,8 @@ function buildDock(inner) {
     btn.setAttribute('aria-expanded', 'false');
 
     const img = document.createElement('img');
-    img.src = 'assets/H-38 Logo.png';
-    img.alt = 'H-38 logo';
+    img.src = 'assets/H-38 animated logo.gif';
+    img.alt = 'H-38 animated logo';
     btn.appendChild(img);
     return btn;
   }

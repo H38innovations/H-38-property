@@ -1,5 +1,5 @@
 :root {
-  --brand: #f49957;
+  --brand: #f84746;
   --surface: #F5F6F7;
   --surface-muted: #E9EAEC;
   --text-dark: #23272A;
@@ -157,11 +157,18 @@ button:focus-visible {
   border-radius: var(--radius-card);
   overflow: hidden;
   background: var(--surface);
-  transition: transform 220ms ease;
+  border: 1px solid transparent;
+  transition: border-color 200ms ease, transform 220ms ease;
 }
 
 .card-link:hover {
-  transform: translateY(-6px);
+  transform: none;
+  border-color: #f84746;
+}
+
+.card-link:focus-visible {
+  outline: none;
+  border-color: #f84746;
 }
 
 .card-media {
@@ -176,11 +183,6 @@ button:focus-visible {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 260ms ease;
-}
-
-.card-link:hover .card-img {
-  transform: scale(1.05);
 }
 
 .card-body {
@@ -228,6 +230,13 @@ button:focus-visible {
   font-weight: 500;
   color: var(--text-dark);
   margin-bottom: 20px;
+  transition: color 160ms ease;
+}
+
+.post-back:hover,
+.post-back:focus-visible {
+  color: #f84746;
+  outline: none;
 }
 
 .post-title {
@@ -293,7 +302,7 @@ button:focus-visible {
 }
 
 .article-contact {
-  margin-top: clamp(48px, 8vw, 96px);
+  margin: clamp(48px, 8vw, 96px) -24px 0;
   background: #E9EAEC;
   border-radius: 28px;
   padding: clamp(40px, 6vw, 72px) 24px;
@@ -347,7 +356,7 @@ button:focus-visible {
   text-underline-offset: 4px;
 }
 .article-contact-link:hover {
-  color: #f49957;
+  color: #f84746;
 }
 
 @media (max-width: 700px) {
@@ -477,12 +486,14 @@ input[type="search"] { -webkit-appearance: none; appearance: none; }
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 180ms ease;
+  transition: transform 200ms ease;
   padding: 0;
   overflow: hidden;
+  transform-origin: center;
 }
-.dock-pages:hover {
-  transform: translateY(-1px);
+.dock-pages:hover,
+.dock-pages:focus-visible {
+  transform: scale(1.2);
 }
 .dock-pages img {
   width: 100%;
@@ -580,6 +591,13 @@ body.pages-overlay-active { overflow: hidden; }
   line-height: 1.18;
   letter-spacing: -0.015em;
   max-width: 58ch;
+}
+.pages-intro-body {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  line-height: 1.65;
+  max-width: 70ch;
 }
 .pages-sections { display: flex; flex-direction: column; gap: clamp(48px, 8vw, 80px); }
 .pages-preview.loading { justify-content: center; align-items: center; min-height: 40vh; color: var(--text-muted); font-size: 1rem; }
