@@ -17,11 +17,11 @@ const OVERLAY_TEMPLATE_URL = 'overlay-content.html';
 const OVERLAY_FALLBACK_HTML = `
 <div class="pages-preview">
   <h2 class="pages-intro" id="pages-overlay-title">H-38 is a design and strategy practice for the built environment.</h2>
-  <p class="pages-intro-body">We operate at the hyphen of design, making, and operations.</p>
+  <p class="pages-intro-body">We operate at the hyphen of design, making, and operations. Our focus is on solving problems. Innovation is the byproduct, and technology is the tool.</p>
   <div class="pages-sections">
 
     <figure class="overlay-section-image">
-      <img src="assets/H-38 Branding.png" alt="Workflow collaboration across the built environment" loading="lazy">
+      <img src="assets/tool.png" alt="Workflow collaboration across the built environment" loading="lazy">
     </figure>
 
 <section class="overlay-section">
@@ -327,7 +327,7 @@ const OVERLAY_FALLBACK_HTML = `
 
 
     <figure class="overlay-section-image">
-      <img src="assets/H-38 Branding.png" alt="Team coordination across digital and physical environments" loading="lazy">
+      <img src="assets/architecture.png" alt="Team coordination across digital and physical environments" loading="lazy">
     </figure>
 
     
@@ -361,6 +361,7 @@ const OVERLAY_FALLBACK_HTML = `
     </section>
   </div>
 </div>
+
 
 `;
 

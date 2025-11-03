@@ -612,7 +612,7 @@ body.pages-overlay-active { overflow: hidden; }
 .overlay-service-name { font-weight: 600; font-size: 1.02rem; letter-spacing: -0.01em; color: var(--text-dark); }
 .overlay-service-desc { font-size: 1rem; line-height: 1.65; color: var(--text-muted); }
 .overlay-section-image { margin: clamp(24px, 5vw, 48px) 0; }
-.overlay-section-image img { width: 100%; border-radius: 20px; display: block; object-fit: cover; max-height: 420px; }
+.overlay-section-image img { width: 100%; border-radius: 20px; display: block; object-fit: cover; height: auto; }
 .overlay-contact { display: flex; flex-direction: column; gap: clamp(36px, 6vw, 56px); margin-top: clamp(40px, 8vw, 80px); }
 .overlay-contact-copy { display: flex; flex-direction: column; gap: 18px; max-width: 680px; }
 .overlay-contact-title { margin: 0; font-size: clamp(2.6rem, 6vw, 3.6rem); font-weight: 800; letter-spacing: -0.02em; color: var(--text-dark); }
