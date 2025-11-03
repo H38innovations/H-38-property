@@ -16,8 +16,8 @@ const DOCK_DEFAULT_MODAL = `
 const OVERLAY_TEMPLATE_URL = 'overlay-content.html';
 const OVERLAY_FALLBACK_HTML = `
 <div class="pages-preview">
-  <h2 class="pages-intro" id="pages-overlay-title">We’re a problem-solving studio for the built world, at the hyphen of design, making, and operations.</h2>
-  <p class="pages-intro-body">From the UAE, we help teams worldwide build better places for people and planet.</p>
+  <h2 class="pages-intro" id="pages-overlay-title">H-38 is a design and strategy practice for the built environment.</h2>
+  <p class="pages-intro-body">We operate at the hyphen of design, making, and operations.</p>
   <div class="pages-sections">
 
     <figure class="overlay-section-image">
@@ -361,6 +361,7 @@ const OVERLAY_FALLBACK_HTML = `
     </section>
   </div>
 </div>
+
 `;
 
 window.DOCK_CONFIG = window.DOCK_CONFIG || {};
